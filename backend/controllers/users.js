@@ -1,4 +1,5 @@
-const User = require('../models/user');
+const User = require("../models/user");
+const bcrypt = require("bcryptjs");
 
 // get/users retorna todos os usuários
 module.exports.getUsers = (req, res) => {
@@ -9,7 +10,7 @@ module.exports.getUsers = (req, res) => {
 
     .catch(() => {
       res.status(500).send({
-        message: 'Erro ao buscar usuários',
+        message: "Erro ao buscar usuários",
       });
     });
 };
@@ -22,40 +23,60 @@ module.exports.getUserById = (req, res) => {
     .then((user) => {
       if (!user) {
         return res.status(404).send({
-          message: 'Usuário não encontrado',
+          message: "Usuário não encontrado",
         });
       }
       return res.status(200).send(user);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === "CastError") {
         return res.status(400).send({
-          message: 'ID de usuário inválido',
+          message: "ID de usuário inválido",
         });
       }
       return res.status(500).send({
-        message: 'Erro ao buscar usuário',
+        message: "Erro ao buscar usuário",
       });
     });
 };
 
 // post/users cria um novo usuário
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const { name, about, avatar, email, password } = req.body;
 
-  User.create({ name, about, avatar })
-    .then((user) => {
-      res.status(201).send(user);
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => {
+      return User.create({
+        name,
+        about,
+        avatar,
+        email,
+        password: hash, // Armazena a senha criptografada
+      });
     })
-
+    .then((user) => {
+      res.status(201).send({
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+      });
+    })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === "ValidationError") {
         return res.status(400).send({
-          message: 'Dados de usuário inválidos',
+          message: "Dados de usuário inválidos",
+        });
+      }
+      if (err.code === 11000) {
+        return res.status(409).send({
+          message: "Email já cadastrado",
         });
       }
       return res.status(500).send({
-        message: 'Erro ao criar usuário',
+        message: "Erro ao criar usuário",
       });
     });
 };
@@ -74,7 +95,7 @@ module.exports.updateUser = (req, res) => {
   )
 
     .orFail(() => {
-      const err = new Error('Usuário não encontrado');
+      const err = new Error("Usuário não encontrado");
       err.statusCode = 404;
       throw err;
     })
@@ -84,15 +105,15 @@ module.exports.updateUser = (req, res) => {
     })
 
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === "ValidationError") {
         return res.status(400).send({
-          message: 'Dados inválidos',
+          message: "Dados inválidos",
         });
       }
 
-      if (err.name === 'CastError') {
+      if (err.name === "CastError") {
         return res.status(400).send({
-          message: 'ID inválido',
+          message: "ID inválido",
         });
       }
 
@@ -103,7 +124,7 @@ module.exports.updateUser = (req, res) => {
       }
 
       return res.status(500).send({
-        message: 'Erro interno',
+        message: "Erro interno",
       });
     });
 };
@@ -122,7 +143,7 @@ module.exports.updateAvatar = (req, res) => {
   )
 
     .orFail(() => {
-      const err = new Error('Usuário não encontrado');
+      const err = new Error("Usuário não encontrado");
       err.statusCode = 404;
       throw err;
     })
@@ -132,14 +153,14 @@ module.exports.updateAvatar = (req, res) => {
     })
 
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === "ValidationError") {
         return res.status(400).send({
-          message: 'Dados inválidos',
+          message: "Dados inválidos",
         });
       }
 
       return res.status(500).send({
-        message: 'Erro interno',
+        message: "Erro interno",
       });
     });
 };
