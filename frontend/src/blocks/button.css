@@ -1,0 +1,182 @@
+.button {
+  width: 358px;
+  height: 50.15px;
+  border-radius: 2px 0px 0px 0px;
+  font-family: Inter;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 21.78px;
+  text-align: center;
+  text-underline-position: from-font;
+  -webkit-text-decoration-skip-ink: none;
+  text-decoration-skip-ink: none;
+  background-color: #000000;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.button:hover {
+  opacity: 80%;
+}
+
+.button:disabled {
+  color: #b8b8b8;
+  background: #ededed;
+  pointer-events: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.button__profile-open {
+  width: 24px;
+  height: 24px;
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -ms-flex-pack: end;
+  justify-content: center;
+  margin-top: 15px;
+  cursor: pointer;
+}
+
+.button__profile-open:hover {
+  opacity: 60%;
+}
+
+.button__profile-edit {
+  width: 10px;
+  height: 10px;
+}
+
+.button__profile-add {
+  width: 150px;
+  height: 50px;
+  padding: 0;
+  margin: 0 0 0 165px;
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -ms-flex-pack: end;
+  justify-content: center;
+}
+
+.button__profile-add:hover {
+  opacity: 60%;
+}
+
+.button__profile-card {
+  width: 22px;
+  height: 22px;
+}
+
+/* card buttons */
+.button__remove-card {
+  border: none;
+  width: 18px;
+  height: 19.3px;
+  background: url(../images/button_trash.png) center no-repeat;
+  cursor: pointer;
+  position: absolute;
+  top: 19px;
+  left: 243px;
+}
+
+.button__remove-card:hover {
+  opacity: 60%;
+}
+
+.button__like {
+  border: none;
+  background: url(https://practicum-content.s3.us-west-1.amazonaws.com/web-code/dom/moved_heart.svg)
+    center no-repeat;
+  width: 21px;
+  height: 19px;
+  cursor: pointer;
+  position: absolute;
+  top: 316px;
+  left: 243px;
+  transition: 0.2s;
+}
+
+.button__like:hover {
+  opacity: 50%;
+}
+
+.button__like_active {
+  background: url(https://practicum-content.s3.us-west-1.amazonaws.com/web-code/dom/moved_heart-filled.svg)
+    center no-repeat;
+  width: 21px;
+  height: 19px;
+}
+
+@media screen and (max-width: 920px) {
+  .button__profile-add {
+    margin: 0 5px 0 auto;
+  }
+}
+
+@media screen and (max-width: 740px) {
+  /* .button {
+    width: 238px;
+    height: 46px;
+    font-size: 14px;
+  } */
+
+  .button__profile-open {
+    max-width: 18px;
+    height: 18px;
+    margin: 0;
+  }
+
+  .button__profile-edit {
+    width: 7.5px;
+    height: 7.5px;
+  }
+
+  .button__profile-add {
+    width: 282px;
+    height: 50px;
+    padding: 0;
+    margin: auto;
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .button {
+    width: 238px;
+    height: 46px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .button {
+    width: 200px;
+    height: 46px;
+    font-size: 14px;
+  }
+
+  .button__profile-add {
+    width: 200px;
+    height: 46px;
+    padding: 0;
+    margin: auto;
+  }
+}

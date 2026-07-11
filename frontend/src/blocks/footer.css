@@ -1,0 +1,34 @@
+.footer {
+  max-width: 880px;
+  margin: auto;
+  padding: 67px 0 60px;
+}
+
+.footer__text {
+  font-family: "Inter";
+  font-size: 18px;
+  font-weight: 400;
+  text-align: left;
+  text-underline-position: from-font;
+  -webkit-text-decoration-skip-ink: none;
+  text-decoration-skip-ink: none;
+  color: #545454;
+}
+
+@media screen and (max-width: 900px) {
+  .footer {
+    max-width: 580px;
+    padding: 50px 0 36px;
+  }
+
+  .footer__text {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .footer {
+    max-width: 282px;
+    padding: 50px 0 36px;
+  }
+}
