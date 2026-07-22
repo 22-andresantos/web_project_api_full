@@ -1,5 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const JWT_SECRET = process.env.JWT_SECRET || "secret-key"; // Chave secreta
 
 // get/users retorna todos os usuários
 module.exports.getUsers = (req, res) => {
@@ -15,9 +17,33 @@ module.exports.getUsers = (req, res) => {
     });
 };
 
+module.exports.getCurrentUser = (req, res) => {
+  const { _id } = req.user;
+
+  User.findById(_id)
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({
+          message: "Usuário não encontrado",
+        });
+      }
+      return res.send(user);
+    })
+
+    .catch((err) => {
+      return res.status(400).send({
+        message: "ID de usuário inválido",
+      });
+
+      return res.status(500).send({
+        message: "Erro interno do servidor",
+      });
+    });
+};
+
 // get/users/:id retorna um usuário específico
 module.exports.getUserById = (req, res) => {
-  const userId = req.user._id;
+  const { userId } = req.params;
 
   User.findById(userId)
     .then((user) => {
@@ -81,8 +107,42 @@ module.exports.createUser = (req, res) => {
     });
 };
 
+module.exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(401).send({
+        message: "Email ou senha incorretos",
+      });
+    }
+
+    const matched = await bcrypt.compare(password, user.password);
+
+    if (!matched) {
+      return res.status(401).send({
+        message: "Email ou senha incorretos",
+      });
+    }
+
+    const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.send({
+      token,
+    });
+  } catch (err) {
+    return res.status(500).send({
+      message: "Erro interno do servidor",
+    });
+  }
+};
+
 // patch/users/me atualiza as informações do usuário autenticado
-module.exports.updateUser = (req, res) => {
+module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(
