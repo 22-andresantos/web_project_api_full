@@ -111,7 +111,7 @@ module.exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password"); // Seleciona a senha para comparação
 
     if (!user) {
       return res.status(401).send({

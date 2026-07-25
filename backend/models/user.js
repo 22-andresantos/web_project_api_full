@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    // select: false, // Não retorna a senha por padrão em consultas
+    select: false, // Não retorna a senha por padrão em consultas
   },
 });
 

@@ -1,4 +1,4 @@
-const Card = require('../models/card');
+const Card = require("../models/card");
 
 // get/cards retorna todos os cartões
 module.exports.getCards = (req, res) => {
@@ -10,7 +10,7 @@ module.exports.getCards = (req, res) => {
 
     .catch(() => {
       res.status(500).send({
-        message: 'Erro interno do servidor',
+        message: "Erro interno do servidor",
       });
     });
 };
@@ -30,33 +30,40 @@ module.exports.createCard = (req, res) => {
     })
 
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === "ValidationError") {
         return res.status(400).send({
-          message: 'Dados de cartão inválidos',
+          message: "Dados de cartão inválidos",
         });
       }
 
       return res.status(500).send({
-        message: 'Erro interno do servidor',
+        message: "Erro interno do servidor",
       });
     });
 };
 
-// delete/cards/:id exclui um cartão específico
+// delete/cards/:id exclui um cartão específico com autenticação e autorização
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
 
-  Card.findByIdAndDelete(cardId)
+  Card.findById(cardId)
     .orFail(() => {
-      const error = new Error('Cartão não encontrado');
+      const error = new Error("Cartão não encontrado");
       error.statusCode = 404;
       throw error;
     })
 
+    .then((card) => {
+      if (!card.owner.equals(req.user._id)) {
+        return res.status(403).send({
+          message: "Você não tem permissão para excluir este cartão",
+        });
+      }
+
+      return card.deleteOne();
+    })
     .then(() => {
-      res.send({
-        message: 'Cartão excluído com sucesso',
-      });
+      res.send({ message: "Cartão excluído com sucesso" });
     })
 
     .catch((err) => {
@@ -68,15 +75,15 @@ module.exports.deleteCard = (req, res) => {
       }
 
       // ID inválido
-      if (err.name === 'CastError') {
+      if (err.name === "CastError") {
         return res.status(400).send({
-          message: 'ID de cartão inválido',
+          message: "ID de cartão inválido",
         });
       }
 
       // erro padrão
       return res.status(500).send({
-        message: 'Erro interno do servidor',
+        message: "Erro interno do servidor",
       });
     });
 };
@@ -98,7 +105,7 @@ module.exports.likeCard = (req, res) => {
   )
 
     .orFail(() => {
-      const err = new Error('Cartão não encontrado');
+      const err = new Error("Cartão não encontrado");
       err.statusCode = 404;
       throw err;
     })
@@ -108,9 +115,9 @@ module.exports.likeCard = (req, res) => {
     })
 
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === "CastError") {
         return res.status(400).send({
-          message: 'ID inválido',
+          message: "ID inválido",
         });
       }
 
@@ -121,7 +128,7 @@ module.exports.likeCard = (req, res) => {
       }
 
       return res.status(500).send({
-        message: 'Erro interno',
+        message: "Erro interno",
       });
     });
 };
@@ -143,7 +150,7 @@ module.exports.dislikeCard = (req, res) => {
   )
 
     .orFail(() => {
-      const err = new Error('Cartão não encontrado');
+      const err = new Error("Cartão não encontrado");
       err.statusCode = 404;
       throw err;
     })
@@ -153,9 +160,9 @@ module.exports.dislikeCard = (req, res) => {
     })
 
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === "CastError") {
         return res.status(400).send({
-          message: 'ID inválido',
+          message: "ID inválido",
         });
       }
 
@@ -166,7 +173,7 @@ module.exports.dislikeCard = (req, res) => {
       }
 
       return res.status(500).send({
-        message: 'Erro interno',
+        message: "Erro interno",
       });
     });
 };
