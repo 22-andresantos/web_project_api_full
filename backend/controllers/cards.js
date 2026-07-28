@@ -1,22 +1,18 @@
 const Card = require("../models/card");
 
 // get/cards retorna todos os cartões
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
 
     .then((cards) => {
-      res.status(200).send(cards);
+      res.send(cards);
     })
 
-    .catch(() => {
-      res.status(500).send({
-        message: "Erro interno do servidor",
-      });
-    });
+    .catch(next);
 };
 
 // post/cards cria um novo cartão
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({
@@ -31,19 +27,16 @@ module.exports.createCard = (req, res) => {
 
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(400).send({
-          message: "Dados de cartão inválidos",
-        });
+        err.statusCode = 400;
+        err.message = "Dados de cartão inválidos";
       }
 
-      return res.status(500).send({
-        message: "Erro interno do servidor",
-      });
+      next(err);
     });
 };
 
 // delete/cards/:id exclui um cartão específico com autenticação e autorização
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
 
   Card.findById(cardId)
@@ -55,9 +48,11 @@ module.exports.deleteCard = (req, res) => {
 
     .then((card) => {
       if (!card.owner.equals(req.user._id)) {
-        return res.status(403).send({
-          message: "Você não tem permissão para excluir este cartão",
-        });
+        const err = new Error(
+          "Você não tem permissão para excluir este cartão",
+        );
+        err.statusCode = 403;
+        throw err;
       }
 
       return card.deleteOne();
@@ -67,29 +62,17 @@ module.exports.deleteCard = (req, res) => {
     })
 
     .catch((err) => {
-      // erro customizado
-      if (err.statusCode === 404) {
-        return res.status(404).send({
-          message: err.message,
-        });
-      }
-
-      // ID inválido
       if (err.name === "CastError") {
-        return res.status(400).send({
-          message: "ID de cartão inválido",
-        });
+        err.statusCode = 400;
+        err.message = "ID de cartão inválido";
       }
 
-      // erro padrão
-      return res.status(500).send({
-        message: "Erro interno do servidor",
-      });
+      next(err);
     });
 };
 
 // PUT /cards/:cardId/likes
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
 
@@ -101,6 +84,7 @@ module.exports.likeCard = (req, res) => {
 
     {
       new: true,
+      runValidators: true,
     },
   )
 
@@ -116,25 +100,16 @@ module.exports.likeCard = (req, res) => {
 
     .catch((err) => {
       if (err.name === "CastError") {
-        return res.status(400).send({
-          message: "ID inválido",
-        });
+        err.statusCode = 400;
+        err.message = "ID de cartão inválido";
       }
 
-      if (err.statusCode === 404) {
-        return res.status(404).send({
-          message: err.message,
-        });
-      }
-
-      return res.status(500).send({
-        message: "Erro interno",
-      });
+      next(err);
     });
 };
 
 // DELETE /cards/:cardId/likes
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
 
@@ -146,6 +121,7 @@ module.exports.dislikeCard = (req, res) => {
 
     {
       new: true,
+      runValidators: true,
     },
   )
 
@@ -155,25 +131,14 @@ module.exports.dislikeCard = (req, res) => {
       throw err;
     })
 
-    .then((card) => {
-      res.send(card);
-    })
+    .then((card) => res.send(card))
 
     .catch((err) => {
       if (err.name === "CastError") {
-        return res.status(400).send({
-          message: "ID inválido",
-        });
+        err.statusCode = 400;
+        err.message = "ID de cartão inválido";
       }
 
-      if (err.statusCode === 404) {
-        return res.status(404).send({
-          message: err.message,
-        });
-      }
-
-      return res.status(500).send({
-        message: "Erro interno",
-      });
+      next(err);
     });
 };

@@ -10,11 +10,7 @@ module.exports.getUsers = (req, res) => {
       res.status(200).send(users);
     })
 
-    .catch(() => {
-      res.status(500).send({
-        message: "Erro ao buscar usuários",
-      });
-    });
+    .catch((err) => next(err));
 };
 
 module.exports.getCurrentUser = (req, res) => {
@@ -31,9 +27,11 @@ module.exports.getCurrentUser = (req, res) => {
     })
 
     .catch((err) => {
-      return res.status(400).send({
-        message: "ID de usuário inválido",
-      });
+      if (err.name === "CastError") {
+        err.statusCode = 400;
+      }
+
+      next(err);
 
       return res.status(500).send({
         message: "Erro interno do servidor",
@@ -56,13 +54,10 @@ module.exports.getUserById = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        return res.status(400).send({
-          message: "ID de usuário inválido",
-        });
+        err.statusCode = 400;
       }
-      return res.status(500).send({
-        message: "Erro ao buscar usuário",
-      });
+
+      next(err);
     });
 };
 
@@ -92,15 +87,17 @@ module.exports.createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(400).send({
-          message: "Dados de usuário inválidos",
-        });
+        err.statusCode = 400;
       }
+
+      next(err);
+
       if (err.code === 11000) {
         return res.status(409).send({
           message: "Email já cadastrado",
         });
       }
+
       return res.status(500).send({
         message: "Erro ao criar usuário",
       });
@@ -166,16 +163,16 @@ module.exports.updateProfile = (req, res) => {
 
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(400).send({
-          message: "Dados inválidos",
-        });
+        err.statusCode = 400;
       }
 
+      next(err);
+
       if (err.name === "CastError") {
-        return res.status(400).send({
-          message: "ID inválido",
-        });
+        err.statusCode = 400;
       }
+
+      next(err);
 
       if (err.statusCode === 404) {
         return res.status(404).send({

@@ -2,7 +2,7 @@ const router = require("express").Router();
 const path = require("path");
 const fs = require("fs").promises;
 
-const cardsPath = path.n(__dirname, "..", "data", "cards.json");
+const cardsPath = path.join(__dirname, "..", "data", "cards.json");
 
 router.get("/", async (req, res) => {
   try {

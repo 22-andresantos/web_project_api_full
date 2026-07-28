@@ -1,9 +1,15 @@
 // instanciação da Api
 
 export default class Api {
-  constructor({ baseUrl, headers }) {
+  constructor({ baseUrl }) {
     this._baseUrl = baseUrl;
-    this._headers = headers;
+  }
+
+  _getHeaders() {
+    return {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+    };
   }
 
   // validação da resposta da requisição
@@ -16,13 +22,13 @@ export default class Api {
 
   getUserInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
-      headers: this._headers,
+      headers: this._getHeaders(),
     }).then(this._checkResponse);
   }
 
   updateUserInfo({ name, about }) {
     return fetch(`${this._baseUrl}/users/me`, {
-      headers: this._headers,
+      headers: this._getHeaders(),
       method: "PATCH",
       body: JSON.stringify({ name, about }),
     }).then(this._checkResponse);
@@ -30,7 +36,7 @@ export default class Api {
 
   updateAvatar({ avatar }) {
     return fetch(`${this._baseUrl}/users/me/avatar`, {
-      headers: this._headers,
+      headers: this._getHeaders(),
       method: "PATCH",
       body: JSON.stringify({ avatar }),
     }).then(this._checkResponse);
@@ -38,13 +44,13 @@ export default class Api {
 
   getInitialCards() {
     return fetch(`${this._baseUrl}/cards`, {
-      headers: this._headers,
+      headers: this._getHeaders(),
     }).then(this._checkResponse);
   }
 
   addNewCard({ name, link }) {
     return fetch(`${this._baseUrl}/cards`, {
-      headers: this._headers,
+      headers: this._getHeaders(),
       method: "POST",
       body: JSON.stringify({ name, link }),
     }).then(this._checkResponse);
@@ -52,7 +58,7 @@ export default class Api {
 
   deleteCard(cardId) {
     return fetch(`${this._baseUrl}/cards/${cardId}`, {
-      headers: this._headers,
+      headers: this._getHeaders(),
       method: "DELETE",
     }).then(this._checkResponse);
   }
@@ -61,16 +67,15 @@ export default class Api {
     // Se isLiked for true (ou seja, queremos curtir), usamos PUT. Se false, DELETE.
     const method = isLiked ? "PUT" : "DELETE";
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-      headers: this._headers,
+      headers: this._getHeaders(),
       method: method,
     }).then(this._checkResponse);
   }
 }
 
 const api = new Api({
-  baseUrl: "https://around-api.pt-br.tripleten-services.com/v1",
+  baseUrl: "http://localhost:3000",
   headers: {
-    authorization: "0dcf9fb5-3f22-4ec0-ad4a-45a6e56afe32",
     "Content-Type": "application/json",
   },
 });

@@ -1,40 +1,40 @@
 const express = require("express");
+
 const mongoose = require("mongoose");
 
-const { login, createUser } = require("./controllers/users"); // Controllers
-
-const auth = require("./middlewares/auth"); // Middleware de autenticação
+const app = express();
 
 const usersRouter = require("./routes/users");
 const cardsRouter = require("./routes/cards");
 
-const app = express(); // Criando uma instância do aplicativo Express
-
-const { PORT = 3000 } = process.env;
-
-// Conectando ao banco de dados MongoDB
-mongoose.connect("mongodb://localhost:27017/aroundb");
-
 // MIDDLEWARE para o POST funcionar lendo o JSON)
 app.use(express.json());
 
-// conectando as rotas publicas
-app.post("/signin", login);
-app.post("/signup", createUser);
+// Simulando um usuário autenticado
+app.use((req, res, next) => {
+  req.user = {
+    _id: "6a078c781439d74e9b70cb40", // ID fictício do usuário
+  };
+  next();
+});
 
-app.use(auth); // middleware para rotas protegidas
+mongoose.connect("mongodb://localhost:27017/aroundb");
 
-// conectando as rotas protegidas
+const { PORT = 3000 } = process.env;
+
+// conectando as rotas modulares
 app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
 
 app.use((req, res) => {
+  // Aspas: Deve-se usar sempre 'aspas simples', nunca "duplas", a menos que seja necessário.
   res.status(404).send({
     message: "A solicitação não foi encontrada",
   });
 });
 
-// Iniciando o servidor
+app.use(errorHandler);
+
 app.listen(PORT, () => {
   console.log(`Servidor executando na porta ${PORT}`);
 });

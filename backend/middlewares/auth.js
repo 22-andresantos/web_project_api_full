@@ -1,21 +1,27 @@
 const jwt = require("jsonwebtoken");
 
+const JWT_SECRET = process.env.JWT_SECRET || "secret-key"; // Chave secreta
+
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
+
   if (!authorization || !authorization.startsWith("Bearer ")) {
-    return res.status(403).send({
+    console.log("Authorization:", authorization);
+    return res.status(401).send({
       message: "Não autorizado",
     });
   }
 
   const token = authorization.replace("Bearer ", "");
+  console.log("Token:", token);
 
   try {
     const payload = jwt.verify(token, JWT_SECRET);
+    console.log("Payload:", payload);
     req.user = payload;
-    next();
+    return next();
   } catch (err) {
-    return res.status(403).send({
+    return res.status(401).send({
       message: "Não autorizado",
     });
   }

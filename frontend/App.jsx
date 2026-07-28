@@ -1,29 +1,29 @@
-import { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import { useCallback } from 'react';
+import { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useCallback } from "react";
 
-import ProtectedRoute from './ProtectedRoute/ProtectedRoute.jsx';
+import ProtectedRoute from "./ProtectedRoute/ProtectedRoute.jsx";
 
-import Header from './Header/Header.jsx';
-import Main from './Main/Main.jsx';
-import Footer from './Footer/Footer.jsx';
-import InfoTooltip from './InfoTooltip/InfoTooltip.jsx';
+import Header from "./Header/Header.jsx";
+import Main from "./Main/Main.jsx";
+import Footer from "./Footer/Footer.jsx";
+import InfoTooltip from "./InfoTooltip/InfoTooltip.jsx";
 
-import Login from './Auth/Login.jsx';
-import Register from './Auth/Register.jsx';
+import Login from "./Auth/Login.jsx";
+import Register from "./Auth/Register.jsx";
 
-import * as auth from '../utils/auth.js';
+import * as auth from "../utils/auth.js";
 
-import { api } from '../utils/api.js';
-import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
+import { api } from "../utils/api.js";
+import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [popup, setPopup] = useState(null);
   const [cards, setCards] = useState([]);
-  const [userEmail, setUserEmail] = useState('');
-  const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem('jwt'));
+  const [userEmail, setUserEmail] = useState("");
+  const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("jwt"));
   const [infoTooltip, setInfoTooltip] = useState(false);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ export default function App() {
     setInfoTooltip(false);
 
     if (success) {
-      navigate('/signin');
+      navigate("/signin");
     }
   }
 
@@ -71,15 +71,16 @@ export default function App() {
       .authorize(email, password)
       .then((data) => {
         if (data.token) {
-          localStorage.setItem('jwt', data.token);
+          localStorage.setItem("jwt", data.token);
           // Redirecionar para a página principal ou outra página
           setLoggedIn(true);
           return auth.checkToken(data.token);
+          setUserEmail(userData.email);
         }
       })
       .then((userData) => {
-        setUserEmail(userData.data.email);
-        navigate('/');
+        setUserEmail(userData.email);
+        navigate("/");
       })
       .catch((err) => {
         setSuccess(false);
@@ -90,16 +91,18 @@ export default function App() {
 
   // sair do usuário
   const handleSignOut = useCallback(() => {
-    localStorage.removeItem('jwt');
+    localStorage.removeItem("jwt");
 
     setLoggedIn(false);
 
-    setUserEmail('');
-  }, []);
+    setUserEmail("");
+
+    navigate("/signin");
+  }, [navigate]);
 
   // verificar o token jwt e manter o usuário logado
   useEffect(() => {
-    const token = localStorage.getItem('jwt');
+    const token = localStorage.getItem("jwt");
 
     if (!token) {
       return;
@@ -108,7 +111,7 @@ export default function App() {
     auth
       .checkToken(token)
       .then((data) => {
-        setUserEmail(data.data.email);
+        setUserEmail(data.email);
         setLoggedIn(true);
       })
       .catch((err) => {
@@ -226,25 +229,25 @@ export default function App() {
         handleAddPlaceSubmit,
       }}
     >
-      <div className='page'>
+      <div className="page">
         <Routes>
-          <Route path='/signin' element={<Login onLogin={handleLogin} />} />
+          <Route path="/signin" element={<Login onLogin={handleLogin} />} />
 
           <Route
-            path='/signup'
+            path="/signup"
             element={<Register onRegister={handleRegister} />}
           />
 
           <Route
-            path='/'
+            path="/"
             element={
               <ProtectedRoute loggedIn={loggedIn}>
                 <>
                   <Header>
-                    <div className='header__actions'>
-                      <span className='header__email'>{userEmail}</span>
+                    <div className="header__actions">
+                      <span className="header__email">{userEmail}</span>
                       <button
-                        className='header__logout'
+                        className="header__logout"
                         onClick={handleSignOut}
                       >
                         Sair
