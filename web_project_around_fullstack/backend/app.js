@@ -1,0 +1,67 @@
+require("dotenv").config();
+
+const express = require("express");
+
+const cors = require("cors");
+
+const mongoose = require("mongoose");
+
+const app = express();
+
+const usersRouter = require("./routes/users");
+const cardsRouter = require("./routes/cards");
+
+const { login, createUser } = require("./controllers/users");
+
+const errorHandler = require("./middlewares/errorHandler");
+
+const { errors } = require("celebrate");
+
+const { requestLogger, errorLogger } = require("./utils/logger");
+
+const auth = require("./middlewares/auth");
+
+const { validateLogin, validateCreateUser } = require("./validations/users");
+
+app.use(cors());
+app.options("*", cors());
+
+app.use(requestLogger);
+
+app.use(express.json());
+
+mongoose.connect("mongodb://localhost:27017/aroundb");
+
+const { PORT = 3000 } = process.env;
+
+// Rotas publicas
+app.post("/signin", validateLogin, login);
+app.post("/signup", validateCreateUser, createUser);
+
+// Middleware de autenticação
+app.use(auth);
+
+// Rotas protegidas
+app.use("/users", usersRouter);
+
+app.use("/cards", cardsRouter);
+
+app.use((req, res, next) => {
+  const err = new Error("Recurso não encontrado");
+  err.statusCode = 404;
+
+  next(err);
+});
+
+//logger de erros
+app.use(errorLogger);
+
+//celebrate
+app.use(errors());
+
+//middleware de tratamento de erros
+app.use(errorHandler);
+
+app.listen(PORT, () => {
+  console.log(`Servidor executando na porta ${PORT}`);
+});

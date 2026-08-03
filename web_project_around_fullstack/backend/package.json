@@ -1,0 +1,41 @@
+{
+  "name": "web_project_around_express",
+  "version": "1.0.0",
+  "description": "Backend  Service for web project around Express",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint .",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/22-andresantos/web_project_around_express.git"
+  },
+  "author": "André Santos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/22-andresantos/web_project_around_express/issues"
+  },
+  "homepage": "https://github.com/22-andresantos/web_project_around_express#readme",
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.32.0",
+    "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "celebrate": "^15.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^4.21.2",
+    "express-winston": "^4.2.0",
+    "joi": "^18.2.3",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.6.2",
+    "validator": "^13.15.35",
+    "winston": "^3.19.0"
+  }
+}
