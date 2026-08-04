@@ -76,7 +76,7 @@ export default class Api {
 }
 
 const api = new Api({
-  baseUrl: "",
+  baseUrl: "http://apiandrearound.duckdns.org",
 });
 
 export { api };

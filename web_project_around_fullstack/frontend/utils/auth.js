@@ -1,4 +1,4 @@
-const BASE_URL = "";
+const BASE_URL = "http://apiandrearound.duckdns.org";
 
 function checkResponse(res) {
   if (!res.ok) {
