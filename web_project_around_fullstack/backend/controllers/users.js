@@ -8,7 +8,9 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret-key"; // Chave secreta
 
 // get/users retorna todos os usuários
 module.exports.getUsers = (req, res, next) => {
-  next(new Error("Erro de teste"));
+  User.find({})
+    .then((users) => res.send(users))
+    .catch(next);
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
