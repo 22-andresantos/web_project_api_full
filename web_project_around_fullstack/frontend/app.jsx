@@ -76,7 +76,6 @@ export default function App() {
           // Redirecionar para a página principal ou outra página
           setLoggedIn(true);
           return auth.checkToken(data.token);
-          setUserEmail(userData.email);
         }
       })
       .then((userData) => {
