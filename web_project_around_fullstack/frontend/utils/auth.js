@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "";
 
 function checkResponse(res) {
   if (!res.ok) {

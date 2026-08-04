@@ -141,7 +141,7 @@ module.exports.updateProfile = (req, res, next) => {
     req.user._id,
     { name, about },
     {
-      new: true,
+      returnDocument: "after",
       runValidators: true,
     },
   )
