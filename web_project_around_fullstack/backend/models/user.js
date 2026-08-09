@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const validator = require("validator");
+const mongoose = require('mongoose');
+const validator = require('validator');
 
 const urlRegex = /^https?:\/\/(www\.)?[a-zA-Z0-9-._~:/?%#[\]@!$&'()*+,;=]+#?$/;
 
@@ -8,20 +8,20 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
-    default: "Jacques Cousteau", // Valor padrão caso não seja fornecido
+    default: 'Jacques Cousteau', // Valor padrão caso não seja fornecido
   },
 
   about: {
     type: String,
     minlength: 2,
     maxlength: 30,
-    default: "Explorer", // Valor padrão caso não seja fornecido
+    default: 'Explorer', // Valor padrão caso não seja fornecido
   },
 
   avatar: {
     type: String,
     default:
-      "https://practicum-content.s3.us-west-1.amazonaws.com/resources/moved_avatar_1604080799.jpg", // Valor padrão caso não seja fornecido
+      'https://practicum-content.s3.us-west-1.amazonaws.com/resources/moved_avatar_1604080799.jpg', // Valor padrão caso não seja fornecido
     validate: {
       validator(v) {
         return urlRegex.test(v);
@@ -49,4 +49,4 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("user", userSchema);
+module.exports = mongoose.model('user', userSchema);
