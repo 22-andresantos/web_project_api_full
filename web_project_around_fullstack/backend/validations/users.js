@@ -1,6 +1,5 @@
-const validatorUrl = require("../utils/validateUrl");
-
-const { celebrate, Joi } = require("celebrate");
+const { celebrate, Joi } = require('celebrate');
+const validatorUrl = require('../utils/validateUrl');
 
 // criação de usuário
 module.exports.validateCreateUser = celebrate({
