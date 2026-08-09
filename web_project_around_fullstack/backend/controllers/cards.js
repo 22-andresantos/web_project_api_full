@@ -27,11 +27,12 @@ module.exports.createCard = (req, res, next) => {
 
     .catch((err) => {
       if (err.name === "ValidationError") {
-        err.statusCode = 400;
-        err.message = "Dados de cartão inválidos";
+        const error = new Error("Dados de cartão inválidos");
+        error.statusCode = 400;
+        return next(error);
       }
 
-      next(err);
+      return next(err);
     });
 };
 
@@ -63,11 +64,12 @@ module.exports.deleteCard = (req, res, next) => {
 
     .catch((err) => {
       if (err.name === "CastError") {
-        err.statusCode = 400;
-        err.message = "ID de cartão inválido";
+        const error = new Error("ID de cartão inválido");
+        error.statusCode = 400;
+        return next(error);
       }
 
-      next(err);
+      return next(err);
     });
 };
 
@@ -97,14 +99,14 @@ module.exports.likeCard = (req, res, next) => {
     .then((card) => {
       res.send(card);
     })
-
     .catch((err) => {
       if (err.name === "CastError") {
-        err.statusCode = 400;
-        err.message = "ID de cartão inválido";
+        const error = new Error("ID de cartão inválido");
+        error.statusCode = 400;
+        return next(error);
       }
 
-      next(err);
+      return next(err);
     });
 };
 
@@ -135,10 +137,11 @@ module.exports.dislikeCard = (req, res, next) => {
 
     .catch((err) => {
       if (err.name === "CastError") {
-        err.statusCode = 400;
-        err.message = "ID de cartão inválido";
+        const error = new Error("ID de cartão inválido");
+        error.statusCode = 400;
+        return next(error);
       }
 
-      next(err);
+      return next(err);
     });
 };
