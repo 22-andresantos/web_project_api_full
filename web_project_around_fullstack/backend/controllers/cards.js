@@ -1,4 +1,4 @@
-const Card = require('../models/card');
+const Card = require("../models/card");
 
 // get/cards retorna todos os cartões
 module.exports.getCards = (req, res, next) => {
@@ -26,12 +26,13 @@ module.exports.createCard = (req, res, next) => {
     })
 
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        err.statusCode = 400;
-        err.message = 'Dados de cartão inválidos';
+      if (err.name === "ValidationError") {
+        const error = new Error("Dados de cartão inválidos");
+        error.statusCode = 400;
+        return next(error);
       }
 
-      next(err);
+      return next(err);
     });
 };
 
@@ -41,7 +42,7 @@ module.exports.deleteCard = (req, res, next) => {
 
   Card.findById(cardId)
     .orFail(() => {
-      const error = new Error('Cartão não encontrado');
+      const error = new Error("Cartão não encontrado");
       error.statusCode = 404;
       throw error;
     })
@@ -49,7 +50,7 @@ module.exports.deleteCard = (req, res, next) => {
     .then((card) => {
       if (!card.owner.equals(req.user._id)) {
         const err = new Error(
-          'Você não tem permissão para excluir este cartão',
+          "Você não tem permissão para excluir este cartão",
         );
         err.statusCode = 403;
         throw err;
@@ -58,16 +59,17 @@ module.exports.deleteCard = (req, res, next) => {
       return card.deleteOne();
     })
     .then(() => {
-      res.send({ message: 'Cartão excluído com sucesso' });
+      res.send({ message: "Cartão excluído com sucesso" });
     })
 
     .catch((err) => {
-      if (err.name === 'CastError') {
-        err.statusCode = 400;
-        err.message = 'ID de cartão inválido';
+      if (err.name === "CastError") {
+        const error = new Error("ID de cartão inválido");
+        error.statusCode = 400;
+        return next(error);
       }
 
-      next(err);
+      return next(err);
     });
 };
 
@@ -89,7 +91,7 @@ module.exports.likeCard = (req, res, next) => {
   )
 
     .orFail(() => {
-      const err = new Error('Cartão não encontrado');
+      const err = new Error("Cartão não encontrado");
       err.statusCode = 404;
       throw err;
     })
@@ -97,14 +99,14 @@ module.exports.likeCard = (req, res, next) => {
     .then((card) => {
       res.send(card);
     })
-
     .catch((err) => {
-      if (err.name === 'CastError') {
-        err.statusCode = 400;
-        err.message = 'ID de cartão inválido';
+      if (err.name === "CastError") {
+        const error = new Error("ID de cartão inválido");
+        error.statusCode = 400;
+        return next(error);
       }
 
-      next(err);
+      return next(err);
     });
 };
 
@@ -120,13 +122,13 @@ module.exports.dislikeCard = (req, res, next) => {
     },
 
     {
-      returnDocument: 'after',
+      returnDocument: "after",
       runValidators: true,
     },
   )
 
     .orFail(() => {
-      const err = new Error('Cartão não encontrado');
+      const err = new Error("Cartão não encontrado");
       err.statusCode = 404;
       throw err;
     })
@@ -134,11 +136,12 @@ module.exports.dislikeCard = (req, res, next) => {
     .then((card) => res.send(card))
 
     .catch((err) => {
-      if (err.name === 'CastError') {
-        err.statusCode = 400;
-        err.message = 'ID de cartão inválido';
+      if (err.name === "CastError") {
+        const error = new Error("ID de cartão inválido");
+        error.statusCode = 400;
+        return next(error);
       }
 
-      next(err);
+      return next(err);
     });
 };
