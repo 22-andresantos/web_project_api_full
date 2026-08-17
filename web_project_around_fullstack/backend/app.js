@@ -33,13 +33,7 @@ app.use(express.json());
 mongoose.connect("mongodb://localhost:27017/aroundb");
 
 const { PORT = 3000 } = process.env;
-
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('O servidor travará agora');
-  }, 0);
-});
-
+ 
 // Rotas publicas
 app.post("/signin", validateLogin, login);
 app.post("/signup", validateCreateUser, createUser);
